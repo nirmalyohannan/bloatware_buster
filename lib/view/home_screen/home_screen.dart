@@ -77,61 +77,64 @@ class _ConsoleViewState extends State<ConsoleView> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    return Row(
-      children: [
-        HoverContainer(
-          color: Colors.black26,
-          borderRadius:
-              const BorderRadius.horizontal(left: Radius.circular(10)),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(10),
-            onTap: () => setState(() => isExpanded = !isExpanded),
-            child: SizedBox(
-              height: double.infinity,
-              child: AnimatedRotation(
-                  duration: const Duration(milliseconds: 200),
-                  turns: isExpanded ? 0.5 : 0.0,
-                  child: const Icon(Icons.arrow_left)),
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: Row(
+        children: [
+          HoverContainer(
+            color: Colors.black26,
+            borderRadius:
+                const BorderRadius.horizontal(left: Radius.circular(10)),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(10),
+              onTap: () => setState(() => isExpanded = !isExpanded),
+              child: SizedBox(
+                height: double.infinity,
+                child: AnimatedRotation(
+                    duration: const Duration(milliseconds: 200),
+                    turns: isExpanded ? 0.5 : 0.0,
+                    child: const Icon(Icons.arrow_left)),
+              ),
             ),
           ),
-        ),
-        AnimatedSize(
-          duration: const Duration(milliseconds: 200),
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            width: isExpanded ? size.width * 0.4 : 0,
-            // height: size.height * 0.5,
-            decoration: const BoxDecoration(
-              color: Colors.black,
-            ),
-            child: ListenableBuilder(
-                listenable: ConsoleHandler.instance,
-                builder: (context, _) {
-                  var console = ConsoleHandler.instance;
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      MaterialButton(
-                          color: Colors.white,
-                          onPressed: () => console.clearLog(),
-                          child: const Text("Clear Console")),
-                      const SizedBox(height: 10),
-                      Flexible(
-                        child: ListView.builder(
-                          itemCount: console.logList.length,
-                          itemBuilder: (context, index) {
-                            var text = console.logList[index];
-                            return Text('>> $text',
-                                style: const TextStyle(color: Colors.white));
-                          },
+          AnimatedSize(
+            duration: const Duration(milliseconds: 200),
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              width: isExpanded ? size.width * 0.4 : 0,
+              // height: size.height * 0.5,
+              decoration: const BoxDecoration(
+                color: Colors.black,
+              ),
+              child: ListenableBuilder(
+                  listenable: ConsoleHandler.instance,
+                  builder: (context, _) {
+                    var console = ConsoleHandler.instance;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MaterialButton(
+                            color: Colors.white,
+                            onPressed: () => console.clearLog(),
+                            child: const Text("Clear Console")),
+                        const SizedBox(height: 10),
+                        Flexible(
+                          child: ListView.builder(
+                            itemCount: console.logList.length,
+                            itemBuilder: (context, index) {
+                              var text = console.logList[index];
+                              return Text('>> $text',
+                                  style: const TextStyle(color: Colors.white));
+                            },
+                          ),
                         ),
-                      ),
-                    ],
-                  );
-                }),
+                      ],
+                    );
+                  }),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
