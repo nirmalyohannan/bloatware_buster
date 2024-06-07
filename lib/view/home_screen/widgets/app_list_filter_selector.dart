@@ -9,19 +9,28 @@ class AppListFilterSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-        listenable: DeviceHandler.instance,
-        builder: (context, _) {
-          return DropdownButton<AppListFilter>(
-            value: DeviceHandler.instance.appListFilter,
-            items: AppListFilter.values
-                .map((e) =>
-                    DropdownMenuItem(value: e, child: Text(filterToString(e))))
-                .toList(),
-            onChanged: (e) {
-              DeviceHandler.instance.setAppListFilter(e);
-            },
-          );
-        });
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
+        border: Border.all(color: Colors.grey.shade400),
+        color: Colors.white,
+      ),
+      child: ListenableBuilder(
+          listenable: DeviceHandler.instance,
+          builder: (context, _) {
+            return DropdownButton<AppListFilter>(
+              underline: const SizedBox.shrink(),
+              value: DeviceHandler.instance.appListFilter,
+              items: AppListFilter.values
+                  .map((e) => DropdownMenuItem(
+                      value: e, child: Text(filterToString(e))))
+                  .toList(),
+              onChanged: (e) {
+                DeviceHandler.instance.setAppListFilter(e);
+              },
+            );
+          }),
+    );
   }
 }

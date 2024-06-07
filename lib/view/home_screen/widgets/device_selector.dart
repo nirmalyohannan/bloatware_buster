@@ -14,29 +14,42 @@ class DeviceSelector extends StatelessWidget {
           var devices = DeviceHandler.instance.devices;
           var isLoadingDevices = DeviceHandler.instance.isLoadingDevices;
           var currentDevice = DeviceHandler.instance.currentDevice;
-          return Row(
-            children: [
-              devices.isEmpty
-                  ? const Text("No Devices Found")
-                  : DropdownButton(
-                      value: currentDevice,
-                      items: List.generate(
-                          devices.length,
-                          (index) => DropdownMenuItem(
-                                value: devices[index],
-                                child: Text(devices[index].deviceName),
-                              )),
-                      onChanged: (value) {
-                        if (value == null) return;
-                        DeviceHandler.instance.setCurrentDevice(value);
-                      },
-                    ),
-              SizedBox.square(
-                dimension: 30,
-                child:
-                    isLoadingDevices ? const CircularProgressIndicator() : null,
-              )
-            ],
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
+              border: Border.all(color: Colors.grey.shade400),
+              color: Colors.white,
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.devices),
+                const SizedBox(width: 10),
+                devices.isEmpty
+                    ? const Text("No Devices Found")
+                    : DropdownButton(
+                        underline: const SizedBox.shrink(),
+                        value: currentDevice,
+                        items: List.generate(
+                            devices.length,
+                            (index) => DropdownMenuItem(
+                                  value: devices[index],
+                                  child: Text(devices[index].deviceName ??
+                                      devices[index].serialNumber),
+                                )),
+                        onChanged: (value) {
+                          if (value == null) return;
+                          DeviceHandler.instance.setCurrentDevice(value);
+                        },
+                      ),
+                SizedBox.square(
+                  dimension: 30,
+                  child: isLoadingDevices
+                      ? const CircularProgressIndicator()
+                      : null,
+                )
+              ],
+            ),
           );
         });
   }

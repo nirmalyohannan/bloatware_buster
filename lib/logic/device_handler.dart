@@ -42,11 +42,21 @@ class DeviceHandler extends ChangeNotifier {
         if (line.isNotEmpty) {
           List<String> parts = line.split("\t");
           if (parts.length > 1) {
-            String deviceName = parts[0];
+            String serialNum = parts[0];
             // String deviceState = parts[1].toString();
+            ConsoleHandler.instance
+                .log("adb -s $serialNum shell getprop ro.product.model");
+            ProcessResult nameResult = await Process.run("adb",
+                ["-s", serialNum, "shell", "getprop", "ro.product.model"]);
+            ConsoleHandler.instance.log("Exit Code: ${nameResult.exitCode}");
+            ConsoleHandler.instance
+                .log("Output: ${nameResult.stdout.toString()}");
+            String deviceName = nameResult.stdout.toString().trim();
 
-            DeviceModel device =
-                DeviceModel(deviceName: deviceName, deviceIndex: index);
+            DeviceModel device = DeviceModel(
+                serialNumber: serialNum,
+                deviceIndex: index,
+                deviceName: deviceName);
             devices.add(device);
           }
         }

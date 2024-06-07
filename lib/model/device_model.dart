@@ -1,11 +1,13 @@
 import 'package:bloatware_buster/model/app_model.dart';
 
 class DeviceModel {
-  String deviceName;
+  String serialNumber;
+  String? deviceName;
   int deviceIndex;
   List<AppModel> apps = [];
   DeviceModel({
-    required this.deviceName,
+    required this.serialNumber,
     required this.deviceIndex,
+    this.deviceName,
   });
 }

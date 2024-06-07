@@ -65,7 +65,8 @@ class _AppCardState extends State<AppCard> {
                             const SizedBox(width: 10),
                             Expanded(child: Text(widget.app.packageName)),
                             MaterialButton(
-                                splashColor: Colors.red.shade100,
+                                splashColor: Colors.red.shade200,
+                                hoverColor: Colors.red.shade100,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
                                     side: const BorderSide(color: Colors.red)),
