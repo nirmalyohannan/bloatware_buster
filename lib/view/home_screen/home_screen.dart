@@ -6,9 +6,7 @@ import 'package:bloatware_buster/view/home_screen/widgets/app_list_filter_select
 import 'package:bloatware_buster/view/home_screen/widgets/device_selector.dart';
 import 'package:bloatware_buster/view/widgets/container_shadow.dart';
 import 'package:bloatware_buster/view/widgets/hover_container.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -43,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 const DeviceSelector(),
                 const SizedBox(width: 20),
                 const AppListFilterSelector(),
+                const AppCountWidget()
               ],
             ),
           ),
@@ -61,6 +60,71 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: () => DeviceHandler.instance.getConnectedDevices(),
         icon: const Icon(Icons.refresh),
         label: const Text("Scan Devices"));
+  }
+}
+
+class AppCountWidget extends StatelessWidget {
+  const AppCountWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: DeviceHandler.instance,
+      builder: (context, child) {
+        //Show total installed and uninstalled apps
+        var currentDevice = DeviceHandler.instance.currentDevice;
+        if (currentDevice == null) return const SizedBox();
+        int installedCount = currentDevice.apps
+            .where((element) => element.isRemoved == false)
+            .length;
+        int uninstalledCount = currentDevice.apps
+            .where((element) => element.isRemoved == true)
+            .length;
+        TextStyle titleStyle =
+            const TextStyle(fontSize: 16, fontWeight: FontWeight.bold);
+        TextStyle valueStyle =
+            const TextStyle(fontSize: 14, fontWeight: FontWeight.bold);
+
+        return Container(
+          height: 50,
+          margin: const EdgeInsets.only(left: 40),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 3),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            boxShadow: [containerShadow],
+          ),
+          child: Row(
+            children: [
+              Column(
+                children: [
+                  Text("Apps", style: titleStyle.copyWith(color: Colors.green)),
+                  Text(installedCount.toString(), style: valueStyle),
+                ],
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 10),
+                width: 1,
+                color: Colors.grey,
+                height: 40,
+              ),
+              Column(
+                children: [
+                  Text("Removed",
+                      style: titleStyle.copyWith(color: Colors.redAccent)),
+                  Text(
+                    uninstalledCount.toString(),
+                    style: valueStyle,
+                  )
+                ],
+              )
+            ],
+          ),
+        );
+      },
+    );
   }
 }
 
