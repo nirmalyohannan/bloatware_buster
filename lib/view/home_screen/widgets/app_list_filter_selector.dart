@@ -10,7 +10,7 @@ class AppListFilterSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(10)),
         border: Border.all(color: Colors.grey.shade400),
@@ -20,6 +20,8 @@ class AppListFilterSelector extends StatelessWidget {
           listenable: DeviceHandler.instance,
           builder: (context, _) {
             return DropdownButton<AppListFilter>(
+              isExpanded: false,
+              isDense: true,
               underline: const SizedBox.shrink(),
               value: DeviceHandler.instance.appListFilter,
               items: AppListFilter.values

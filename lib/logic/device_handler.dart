@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bloatware_buster/constants/package_names.dart';
 import 'package:bloatware_buster/logic/console_handler.dart';
 import 'package:bloatware_buster/model/app_list_filter.dart';
 import 'package:bloatware_buster/model/app_model.dart';
@@ -104,10 +105,15 @@ class DeviceHandler extends ChangeNotifier {
         if (line.isNotEmpty) {
           List<String> parts = line.split(":");
           if (parts.length > 1) {
-            String packageName = parts[1].toString();
+            String packageName = parts[1].toString().trim().toLowerCase();
+            String? appName = packageNameMap[packageName];
+            if (appName != null) {
+              appName = appName;
+            }
 
             AppModel app = AppModel(
                 packageName: packageName,
+                appName: appName,
                 deviceIndex: currentDevice!.deviceIndex);
             appList.add(app);
           }

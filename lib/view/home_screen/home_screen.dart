@@ -28,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: [
           Container(
+            height: 65,
             margin: const EdgeInsets.all(10),
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             decoration: BoxDecoration(
@@ -39,7 +40,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 buildScanDevicesButton(),
                 const SizedBox(width: 20),
                 const DeviceSelector(),
-                const SizedBox(width: 20),
                 const AppListFilterSelector(),
                 const AppCountWidget()
               ],
@@ -83,9 +83,9 @@ class AppCountWidget extends StatelessWidget {
             .where((element) => element.isRemoved == true)
             .length;
         TextStyle titleStyle =
-            const TextStyle(fontSize: 16, fontWeight: FontWeight.bold);
+            const TextStyle(fontSize: 15, fontWeight: FontWeight.bold);
         TextStyle valueStyle =
-            const TextStyle(fontSize: 14, fontWeight: FontWeight.bold);
+            const TextStyle(fontSize: 12, fontWeight: FontWeight.bold);
 
         return Container(
           height: 50,
@@ -100,7 +100,10 @@ class AppCountWidget extends StatelessWidget {
             children: [
               Column(
                 children: [
-                  Text("Apps", style: titleStyle.copyWith(color: Colors.green)),
+                  Text(
+                    "Apps",
+                    style: titleStyle.copyWith(color: Colors.green),
+                  ),
                   Text(installedCount.toString(), style: valueStyle),
                 ],
               ),
@@ -297,8 +300,10 @@ class _AppListViewState extends State<AppListView> {
   }
 
   void searchFilter(List<AppModel> appList) {
+    searchTerm = searchTerm.toLowerCase();
     searchFilteredList = appList.where((element) {
-      return element.packageName.contains(searchTerm);
+      return element.packageName.contains(searchTerm) ||
+          element.appName?.toLowerCase().contains(searchTerm) == true;
     }).toList();
   }
 }

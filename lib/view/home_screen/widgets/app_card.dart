@@ -63,7 +63,19 @@ class _AppCardState extends State<AppCard> {
                           children: [
                             buildIcon(),
                             const SizedBox(width: 10),
-                            Expanded(child: Text(widget.app.packageName)),
+                            Expanded(
+                                child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (widget.app.appName != null)
+                                  Text(
+                                    widget.app.appName!,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                Text(widget.app.packageName),
+                              ],
+                            )),
                             MaterialButton(
                                 splashColor: Colors.red.shade200,
                                 hoverColor: Colors.red.shade100,
