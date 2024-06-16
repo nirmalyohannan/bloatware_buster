@@ -44,7 +44,7 @@ const Map<String, String> packageNameMap = {
   "com.google.android.calendar": "Google Calendar",
   "com.google.android.apps.tasks": "Google Tasks",
   "com.google.android.contacts": "Google Contacts",
-  "com.google.android.apps.tachyon": "Google Duo",
+  "com.google.android.apps.tachyon": "Google Meet",
   "com.google.android.apps.meetings": "Google Meet",
   "com.google.android.apps.magazines": "Google News",
   "com.google.android.apps.walletnfcrel": "Google Pay",

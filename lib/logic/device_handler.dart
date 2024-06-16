@@ -1,7 +1,8 @@
 import 'dart:io';
 
 import 'package:bloatware_buster/constants/package_names.dart';
-import 'package:bloatware_buster/logic/console_handler.dart';
+import 'package:bloatware_buster/logic/adb_handler.dart';
+// import 'package:bloatware_buster/logic/console_handler.dart';
 import 'package:bloatware_buster/model/app_list_filter.dart';
 import 'package:bloatware_buster/model/app_model.dart';
 import 'package:bloatware_buster/model/device_model.dart';
@@ -18,6 +19,7 @@ class DeviceHandler extends ChangeNotifier {
   DeviceModel? currentDevice;
   List<DeviceModel> devices = [];
   AppListFilter appListFilter = AppListFilter.all;
+  AdbHandler adb = AdbHandler.instance;
 
   void setCurrentDevice(DeviceModel device) {
     currentDevice = device;
@@ -30,10 +32,9 @@ class DeviceHandler extends ChangeNotifier {
     devices.clear();
     currentDevice = null;
     notifyListeners();
-    ConsoleHandler.instance.log("adb devices");
-    ProcessResult result = await Process.run("adb", ["devices"]);
-    ConsoleHandler.instance.log("Exit Code: ${result.exitCode}");
-    ConsoleHandler.instance.log("Output: ${result.stdout.toString()}");
+
+    ProcessResult result = await adb.run(["devices"]);
+
     if (result.exitCode == 0) {
       String output = result.stdout.toString();
       List<String> lines = output.split("\n");
@@ -45,15 +46,9 @@ class DeviceHandler extends ChangeNotifier {
           if (parts.length > 1) {
             String serialNum = parts[0];
             // String deviceState = parts[1].toString();
-            ConsoleHandler.instance
-                .log("adb -s $serialNum shell getprop ro.product.model");
-            ProcessResult nameResult = await Process.run("adb",
-                ["-s", serialNum, "shell", "getprop", "ro.product.model"]);
-            ConsoleHandler.instance.log("Exit Code: ${nameResult.exitCode}");
-            ConsoleHandler.instance
-                .log("Output: ${nameResult.stdout.toString()}");
+            ProcessResult nameResult = await adb
+                .run(["-s", serialNum, "shell", "getprop", "ro.product.model"]);
             String deviceName = nameResult.stdout.toString().trim();
-
             DeviceModel device = DeviceModel(
                 serialNumber: serialNum,
                 deviceIndex: index,
@@ -62,8 +57,6 @@ class DeviceHandler extends ChangeNotifier {
           }
         }
       }
-    } else {
-      ConsoleHandler.instance.log("Error: ${result.stderr.toString()}");
     }
     isLoadingDevices = false;
     notifyListeners();
@@ -71,8 +64,6 @@ class DeviceHandler extends ChangeNotifier {
 
   Future<void> getCurrentDeviceAppList() async {
     if (currentDevice == null) {
-      //TODO: Pop up error
-      ConsoleHandler.instance.log("No device selected");
       return;
     }
 
@@ -90,11 +81,8 @@ class DeviceHandler extends ChangeNotifier {
     if (appListFilter != AppListFilter.all) {
       arguments.add(filterFlag);
     }
-    ConsoleHandler.instance.log("adb ${arguments.join(" ")}");
-    ProcessResult result =
-        await Process.run("adb", arguments, runInShell: true);
-    ConsoleHandler.instance.log("Exit Code: ${result.exitCode}");
-    ConsoleHandler.instance.log("Output: ${result.stdout.toString()}");
+    ProcessResult result = await adb.run(arguments, runInShell: true);
+
     List<AppModel> appList = [];
     if (result.exitCode == 0) {
       String output = result.stdout.toString();
@@ -121,7 +109,7 @@ class DeviceHandler extends ChangeNotifier {
       }
       currentDevice!.apps = appList;
     } else {
-      ConsoleHandler.instance.log("Error: ${result.stderr.toString()}");
+      //TODO: Pop up error
     }
     isLoadingAppList = false;
     notifyListeners();
@@ -137,17 +125,12 @@ class DeviceHandler extends ChangeNotifier {
       currentDevice!.deviceIndex.toString(),
       app.packageName
     ];
-    ConsoleHandler.instance.log("adb ${arguments.join(" ")}");
-    ProcessResult result =
-        await Process.run("adb", arguments, runInShell: true);
-    ConsoleHandler.instance.log("Exit Code: ${result.exitCode}");
-    ConsoleHandler.instance.log("Output: ${result.stdout.toString()}");
+    ProcessResult result = await adb.run(arguments, runInShell: true);
     if (result.exitCode == 0) {
       await beforeCleanUp(true);
       // getCurrentDeviceAppList();
     } else {
       await beforeCleanUp(false);
-      ConsoleHandler.instance.log("Error: ${result.stderr.toString()}");
     }
     notifyListeners();
   }

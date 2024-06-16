@@ -1,3 +1,4 @@
+import 'package:bloatware_buster/logic/adb_handler.dart';
 import 'package:bloatware_buster/logic/console_handler.dart';
 import 'package:bloatware_buster/logic/device_handler.dart';
 import 'package:bloatware_buster/model/app_model.dart';
@@ -18,7 +19,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
-    DeviceHandler.instance.getConnectedDevices();
+    AdbHandler.instance
+        .findAdbPath()
+        .then((value) => DeviceHandler.instance.getConnectedDevices());
+
     super.initState();
   }
 
