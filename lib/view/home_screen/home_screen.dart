@@ -5,6 +5,7 @@ import 'package:bloatware_buster/model/app_model.dart';
 import 'package:bloatware_buster/view/home_screen/widgets/app_card.dart';
 import 'package:bloatware_buster/view/home_screen/widgets/app_list_filter_selector.dart';
 import 'package:bloatware_buster/view/home_screen/widgets/device_selector.dart';
+import 'package:bloatware_buster/view/home_screen/widgets/install_adb_dialog.dart';
 import 'package:bloatware_buster/view/widgets/container_shadow.dart';
 import 'package:bloatware_buster/view/widgets/hover_container.dart';
 import 'package:flutter/material.dart';
@@ -19,11 +20,23 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
-    AdbHandler.instance
-        .findAdbPath()
-        .then((value) => DeviceHandler.instance.getConnectedDevices());
-
+    initialise();
     super.initState();
+  }
+
+  void initialise() async {
+    bool hasADB = await AdbHandler.instance.isAdbInstalled();
+    if (!hasADB) {
+      if (mounted) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => const InstallAdbDialog(),
+        );
+      }
+    } else {
+      DeviceHandler.instance.getConnectedDevices();
+    }
   }
 
   @override

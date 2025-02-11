@@ -1,6 +1,5 @@
 import 'package:bloatware_buster/logic/device_handler.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class DeviceSelector extends StatelessWidget {
   const DeviceSelector({
